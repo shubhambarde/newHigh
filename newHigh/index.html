@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>New Highs Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7f8;--card:#fff;--ink:#14212b;--mute:#66767f;--line:#dbe2e6;--up:#0a8a5b;--dn:#c43d3d;--acc:#0f4c5c;--chip:#e3eef0;--sel:#eef5f6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e161b;--card:#16222a;--ink:#e6eef2;--mute:#8a9ba5;--line:#263640;--up:#3ccf93;--dn:#ef7b7b;--acc:#7cc4d4;--chip:#1f3540;--sel:#1a2b34}}
+:root[data-theme="dark"]{--bg:#0e161b;--card:#16222a;--ink:#e6eef2;--mute:#8a9ba5;--line:#263640;--up:#3ccf93;--dn:#ef7b7b;--acc:#7cc4d4;--chip:#1f3540;--sel:#1a2b34}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Schibsted Grotesk',system-ui,sans-serif;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:30px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mute);margin:0 0 18px;font-size:14px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.bar input[type=search]{flex:1;min-width:160px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+button,.file{padding:9px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+button:focus-visible,.file:focus-within,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+select{padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+.seg{display:flex;gap:0}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0;margin-left:-1px}.seg button[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc);font-weight:600}
+.wrap{overflow:auto;max-height:calc(100vh - 110px);min-height:300px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:540px}
+th,td{padding:0;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{padding:10px 12px;font-weight:600;color:var(--mute);position:sticky;top:0;z-index:2;background:var(--card);box-shadow:0 1px 0 var(--line)}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+td>button{all:unset;display:block;width:100%;padding:11px 12px;cursor:pointer;font-variant-numeric:tabular-nums}
+td>button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+td:first-child>button{font-weight:600}
+td>button:hover{background:var(--sel)}
+tr.open>td{background:var(--sel)}
+td>button.zero{color:var(--mute);opacity:.55}
+td>button.on{background:var(--acc);color:var(--bg);font-weight:800}
+tr.detail>td{padding:14px 12px;background:var(--card);white-space:normal;text-align:left}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pill{padding:5px 11px;border-radius:99px;font-size:13px}
+.pill[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.dl{margin-left:auto;padding:5px 12px;font-size:13px;background:var(--acc);color:var(--bg);border-color:var(--acc);font-weight:600}
+.chks{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;margin-bottom:10px;font-size:13px}.chk{display:flex;gap:4px;align-items:center;cursor:pointer}
+.mxw{overflow-x:auto}.mx{min-width:540px;font-size:13px}.mr{display:grid;grid-template-columns:1.4fr repeat(6,.8fr) 1fr 1fr;gap:4px;padding:6px 4px;border-bottom:1px solid var(--line);text-align:center}.mr>:first-child{text-align:left;font-weight:600}.mh{color:var(--mute);font-weight:600}.tick{color:var(--up);font-weight:800}.mute{color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.st{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+.st b{display:block;font-size:14px}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.none{color:var(--mute);padding:6px 0}
+.note{font-size:13px;color:var(--mute);margin-top:14px}
+</style>
+</head>
+<body>
+<main>
+<h1 id="title">New highs by day</h1>
+<p class="sub" id="src"></p>
+<div class="bar">
+  <select id="yr" aria-label="Year"></select>
+  <div class="seg" role="group" aria-label="Highs or lows"><button id="mh" aria-pressed="true">New highs</button><button id="ml" aria-pressed="false">New lows</button></div>
+  <input type="search" id="q" placeholder="Filter stocks by symbol" aria-label="Filter stocks by symbol">
+  <label class="file">Upload CSV files<input type="file" id="f" accept=".csv" multiple hidden></label>
+  <button id="demo">Use sample data</button>
+</div>
+<div class="wrap"><table><thead><tr><th>Date</th><th>5 day</th><th>14 day</th><th>1 month</th><th>3 month</th><th>6 month</th><th>1 year</th></tr></thead>
+<tbody id="rows"></tbody></table></div>
+<p class="note">Each row is a trading day. The numbers count stocks that traded that day at their highest (New highs) or lowest (New lows) level of the last 5, 14, 21 (1 month), 63 (3 months), 126 (6 months) or 252 (1 year) trading days. Click a day or a number to see the stocks. Stocks at a 1-year extreme also appear in every shorter period. Upload the yearly files made by the script (select all of them at once), or a single price CSV with columns <b>symbol, date, close</b> (optional <b>high</b> and <b>low</b>). Data stays in your browser. Sample data is randomly generated, not real prices.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const P=[{n:5,l:"5 day"},{n:14,l:"14 day"},{n:21,l:"1 month"},{n:63,l:"3 month"},{n:126,l:"6 month"},{n:252,l:"1 year"}];
+let DH={},DL={},mode="high",days=[],open=null,op=0,srcText="",SRC={},year=null;
+const $=id=>document.getElementById(id);
+
+function demo(){
+  let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+  const syms="RELIANCE TCS HDFCBANK INFY ICICIBANK SBIN ITC LT BHARTIARTL AXISBANK KOTAKBANK MARUTI SUNPHARMA TITAN WIPRO ONGC NTPC TATASTEEL ADANIENT BAJFINANCE HCLTECH ASIANPAINT ULTRACEMCO COALINDIA M&M POWERGRID TECHM CIPLA GRASIM EICHERMOT".split(" ");
+  const d=[],t=new Date();
+  while(d.length<2800){if(t.getDay()%6)d.unshift(t.toISOString().slice(0,10));t.setDate(t.getDate()-1)}
+  return syms.map(sym=>{
+    let p=200+r()*2500,drift=(r()-.42)*.0025,c=[];
+    for(let i=0;i<2800;i++){p*=1+drift+(r()-.5)*.03;c.push(+p.toFixed(2))}
+    return {sym,d,c,h:c,l:c};
+  });
+}
+function parseCSV(t){
+  const L=t.trim().split(/\r?\n/),H=L.shift().toLowerCase().split(",").map(x=>x.trim());
+  const si=H.indexOf("symbol"),di=H.indexOf("date"),ci=H.indexOf("close"),hi=H.indexOf("high"),li=H.indexOf("low");
+  if(si<0||di<0||ci<0)throw new Error("CSV needs columns: symbol, date, close");
+  const m={};
+  L.forEach(l=>{const a=l.split(",");if(a.length<3)return;(m[a[si].trim()]??=[]).push({d:a[di].trim().slice(0,10),c:+a[ci],h:hi>=0?+a[hi]:+a[ci],l:li>=0?+a[li]:+a[ci]})});
+  return Object.entries(m).map(([sym,rows])=>{rows.sort((x,y)=>x.d<y.d?-1:1);return{sym,d:rows.map(x=>x.d),c:rows.map(x=>x.c),h:rows.map(x=>x.h),l:rows.map(x=>x.l)}});
+}
+function analyse(list){
+  const DH={},DL={};
+  list.forEach(s=>{
+    const n=s.c.length;
+    for(let i=1;i<n;i++){
+      const dt=s.d[i];DH[dt]??={};DL[dt]??={};
+      for(const [M,arr,hi] of [[DH,s.h,true],[DL,s.l,false]]){
+        for(let k=0;k<P.length;k++){
+          const w=P[k].n;if(i+1<w)break;
+          let m=hi?-Infinity:Infinity;
+          for(let j=i-w+1;j<i;j++)if(hi?arr[j]>m:arr[j]<m)m=arr[j];
+          if(hi?arr[i]<m:arr[i]>m)break; // a longer window cannot be hit if this one was missed
+          (M[dt][k]??=[]).push({sym:s.sym,close:s.c[i],chg:(s.c[i]/s.c[i-1]-1)*100,gap:(arr[i]/m-1)*100*(hi?1:-1)});
+        }
+      }
+    }
+  });
+  return {DH,DL};
+}
+function buildEvents(text){
+  const DH={},DL={},L=text.split(/\r?\n/);
+  for(let i=1;i<L.length;i++){
+    const a=L[i].split(",");if(a.length<6)continue;
+    const dt=a[0],o={sym:a[1],close:+a[2],chg:+a[3],gap:null},hp=a[4]===""?-1:+a[4],lp=a[5]===""?-1:+a[5];
+    DH[dt]??={};DL[dt]??={};
+    for(let k=0;k<=hp;k++)(DH[dt][k]??=[]).push(o);
+    for(let k=0;k<=lp;k++)(DL[dt][k]??=[]).push(o);
+  }
+  return {DH,DL};
+}
+async function setYear(y){
+  year=y;const src=SRC[y];
+  if(!src.built){
+    if(!src.text&&src.url){$("src").textContent="Loading "+y+"...";const r=await fetch(src.url);if(!r.ok)throw new Error("Could not load "+src.url);src.text=await r.text()}
+    src.built=buildEvents(src.text);
+  }
+  for(const k in SRC)if(k!==y&&SRC[k].text)delete SRC[k].built; // keep memory low
+  DH=src.built.DH;DL=src.built.DL;
+  days=Object.keys(DH).sort().reverse();open=days[0]||null;op=0;
+  $("yr").innerHTML=Object.keys(SRC).sort().reverse().map(k=>`<option ${k===y?"selected":""}>${k}</option>`).join("");
+  render();
+}
+const cur=()=>mode==="high"?DH:DL;
+const fmt=d=>new Date(d+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+function shown(d){
+  const q=$("q").value.trim().toUpperCase();
+  return (cur()[d][op]||[]).filter(s=>s.sym.toUpperCase().includes(q)).sort((a,b)=>b.chg-a.chg);
+}
+let cmp=false,sel=[true,true,true,false,false,false];
+function commonList(d){
+  const M={},q=$("q").value.trim().toUpperCase();
+  P.forEach((p,k)=>(cur()[d][k]||[]).forEach(x=>{(M[x.sym]??={sym:x.sym,close:x.close,chg:x.chg,hit:P.map(()=>false)}).hit[k]=true}));
+  return Object.values(M).filter(x=>x.sym.toUpperCase().includes(q)&&sel.every((on,k)=>!on||x.hit[k])).sort((a,b)=>b.hit.lastIndexOf(true)-a.hit.lastIndexOf(true)||b.chg-a.chg);
+}
+async function download(d){
+  let rows;
+  if(cmp){
+    const l=commonList(d);if(!l.length)return;
+    rows=l.map(x=>{const r={Symbol:x.sym,Date:d};P.forEach((p,k)=>r[p.l+" "+mode]=x.hit[k]?"Yes":"");r.Close=+x.close.toFixed(2);r["Day change %"]=+x.chg.toFixed(2);return r});
+  }else{
+    const l=shown(d);if(!l.length)return;
+    rows=l.map(x=>({Symbol:x.sym,Date:d,Period:P[op].l+" "+mode,"Close":+x.close.toFixed(2),"Day change %":+x.chg.toFixed(2),[mode==="high"?"Above prior high %":"Below prior low %"]:(x.gap==null?"":+x.gap.toFixed(2))}));
+  }
+  const tag=cmp?"common":P[op].l.replace(" ","");
+  try{
+    let data,ext;
+    if(window.XLSX){
+      const ws=XLSX.utils.json_to_sheet(rows);ws["!cols"]=Object.keys(rows[0]).map(()=>({wch:16}));
+      const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,(cmp?"Common":P[op].l)+" "+mode);
+      data=new Blob([XLSX.write(wb,{type:"array",bookType:"xlsx"})]);ext="xlsx";
+    }else{
+      const h=Object.keys(rows[0]);
+      data=[h.join(","),...rows.map(r=>h.map(k=>r[k]).join(","))].join("\n");ext="csv";
+    }
+    const blob=data instanceof Blob?data:new Blob([data],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`stocks_${tag}_${mode}_${d}.${ext}`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  }catch(err){if(err&&err.code!=="declined")alert("Could not download: "+(err.message||err))}
+}
+function detail(d){
+  const pills=P.map((p,k)=>`<button class="pill" data-d="${d}" data-k="${k}" aria-pressed="${!cmp&&k===op}">${p.l} (${(cur()[d][k]||[]).length})</button>`).join("")+`<button class="pill" data-d="${d}" data-cmp="1" aria-pressed="${cmp}">Common</button>`;
+  let list,body;
+  if(cmp){
+    list=commonList(d);
+    const checks=P.map((p,k)=>`<label class="chk"><input type="checkbox" data-sel="${k}" ${sel[k]?"checked":""}> ${p.l}</label>`).join("");
+    body=`<div class="chks">Stocks at a ${mode} in all of: ${checks}</div>`+(list.length?`<div class="mxw"><div class="mx"><div class="mr mh"><span>Symbol</span>${P.map(p=>`<span>${p.l}</span>`).join("")}<span>Close</span><span>Day</span></div>${list.map(x=>`<div class="mr"><span>${x.sym}</span>${x.hit.map(h=>`<span class="${h?"tick":"mute"}">${h?"✓":"–"}</span>`).join("")}<span>${x.close.toFixed(2)}</span><span class="${x.chg>=0?"up":"dn"}">${x.chg>=0?"+":""}${x.chg.toFixed(1)}%</span></div>`).join("")}</div></div>`:`<div class="none">No common stocks for these periods on this day.</div>`);
+  }else{
+    list=shown(d);
+    body=list.length?`<div class="grid">${list.map(x=>`<div class="st"><b>${x.sym}</b>${x.close.toFixed(2)} <span class="${x.chg>=0?"up":"dn"}">${x.chg>=0?"+":""}${x.chg.toFixed(2)}%</span>${x.gap==null?"":`<br><span class="${mode==="high"?"up":"dn"}">${x.gap.toFixed(2)}%</span> ${mode==="high"?"above prior high":"below prior low"}`}</div>`).join("")}</div>`:`<div class="none">No stocks at a ${P[op].l} ${mode} on this day${$("q").value.trim()?" matching your filter":""}.</div>`;
+  }
+  return `<tr class="detail"><td colspan="7"><div class="pills">${pills}<button class="dl" data-dl="${d}" ${list.length?"":"disabled"}>Download Excel (${list.length})</button></div>${body}</td></tr>`;
+}
+function render(){
+  $("rows").innerHTML=days.map(d=>{
+    const cells=P.map((p,k)=>{const c=(cur()[d][k]||[]).length;return `<td><button data-d="${d}" data-k="${k}" class="${c?"":"zero"}${open===d&&op===k?" on":""}" aria-label="${p.l} highs on ${fmt(d)}: ${c}">${c}</button></td>`}).join("");
+    return `<tr class="${open===d?"open":""}"><td><button data-d="${d}" aria-expanded="${open===d}">${fmt(d)}</button></td>${cells}</tr>`+(open===d?detail(d):"");
+  }).join("")||`<tr><td colspan="7" style="padding:24px;text-align:center;color:var(--mute)">No data yet. Upload a price CSV or use the sample data.</td></tr>`;
+  $("src").textContent=srcText;
+}
+$("rows").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.dl){download(b.dataset.dl);return}
+  if(b.dataset.cmp){open=b.dataset.d;cmp=true;render();return}
+  const d=b.dataset.d,k=b.dataset.k;
+  if(k!==undefined){op=+k;open=d;cmp=false}
+  else open=open===d?null:d;
+  render();
+};
+$("q").oninput=render;
+$("rows").onchange=e=>{const t=e.target;if(t.dataset.sel!==undefined){sel[+t.dataset.sel]=t.checked;render()}};
+function setMode(m){mode=m;$("mh").setAttribute("aria-pressed",m==="high");$("ml").setAttribute("aria-pressed",m==="low");$("title").textContent=m==="high"?"New highs by day":"New lows by day";render()}
+$("mh").onclick=()=>setMode("high");$("ml").onclick=()=>setMode("low");
+function loadRaw(list,text){
+  const {DH:h,DL:l}=analyse(list);SRC={};
+  for(const d of Object.keys(h)){const y=d.slice(0,4);(SRC[y]??={built:{DH:{},DL:{}}}).built.DH[d]=h[d];SRC[y].built.DL[d]=l[d]}
+  srcText=text;setYear(Object.keys(SRC).sort().reverse()[0]);
+}
+$("demo").onclick=()=>loadRaw(demo(),"Showing randomly generated sample data for 30 symbols over about 11 years. Upload your own files to see real highs and lows.");
+$("yr").onchange=e=>setYear(e.target.value);
+$("f").onchange=async e=>{
+  const files=[...e.target.files];if(!files.length)return;
+  try{
+    const ev=[];let raw=null;
+    for(const f of files){
+      const t=await f.text(),h=t.slice(0,t.indexOf("\n")).toLowerCase();
+      if(h.includes("high_p"))ev.push([f.name,t]);
+      else{const l=parseCSV(t);if(!l.length)throw new Error("No usable rows in "+f.name);raw=[f.name,l]}
+    }
+    if(raw&&!ev.length){loadRaw(raw[1],`Showing ${raw[1].length} symbols from ${raw[0]}.`);return}
+    if(!ev.length)throw new Error("No usable files");
+    SRC={};
+    for(const [n,t] of ev){const m=t.split("\n")[1]||"";const y=m.slice(0,4);if(!/^\d{4}$/.test(y))throw new Error("Cannot read dates in "+n);SRC[y]={text:t}}
+    srcText=`Loaded ${ev.length} yearly file${ev.length>1?"s":""}. Pick a year from the dropdown.`;
+    setYear(Object.keys(SRC).sort().reverse()[0]);
+  }catch(err){alert(err.message)}
+};
+(async()=>{
+  try{
+    const r=await fetch("portal_data/years.json",{cache:"no-store"});if(!r.ok)throw 0;
+    const j=await r.json();if(!j.years.length)throw 0;
+    SRC={};j.years.forEach(y=>SRC[y]={url:`portal_data/highs_lows_${y}.csv`});
+    srcText="Data updated "+j.updated+".";
+    await setYear(String(Math.max(...j.years)));
+  }catch(e){$("demo").click();srcText="No data files found yet, showing sample data. Run the update workflow first."}
+  render();
+})();
+</script>
+</body>
+</html>
